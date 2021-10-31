@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    enum FocusedField: Hashable {
+    private enum FocusedField: Hashable {
         case redInput, greenInput, blueInput
     }
     
@@ -23,7 +23,6 @@ struct MainView: View {
     @State private var blueInputValue: String = ""
     
     @State private var isAlertPresenting: Bool = false
-
     
     var body: some View {
         ZStack{
@@ -35,82 +34,76 @@ struct MainView: View {
                     greenColorValue: $greenSliderValue,
                     blueColorValue: $blueSliderValue
                 )
-                
-          slidersView
-                
+                slidersView
                 Spacer()
             }
             .padding()
-            .alert("Wrong format.\nEnter number from 0 to 255.", isPresented: $isAlertPresenting) {}
+            .alert("Wrong format.\nEnter number from 0 to 255.",
+                   isPresented: $isAlertPresenting) {}
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") {
-                        updateViewOnTextFieldsChange()
+                        updateSlidersOnTextFieldsChange()
                     }
                 }
             }
             .onTapGesture {
-                updateViewOnTextFieldsChange()
-               
+                updateSlidersOnTextFieldsChange()
             }
         }
     }
     
     private var slidersView: some View {
         Group {
-        GroupSliderView(
-            sliderValue: $redSliderValue,
-            presentedValue: $redInputValue,
-            color: .red
-        ).focused($focus, equals: .redInput)
-        
-        GroupSliderView(
-            sliderValue: $greenSliderValue,
-            presentedValue: $greenInputValue,
-            color: .green
-        ).focused($focus, equals: .greenInput)
-        
-        GroupSliderView(
-            sliderValue: $blueSliderValue,
-            presentedValue: $blueInputValue,
-            color: .blue
-        ).focused($focus, equals: .blueInput)
+            GroupSliderView(
+                sliderValue: $redSliderValue,
+                presentedValue: $redInputValue,
+                color: .red
+            ).focused($focus, equals: .redInput)
+            
+            GroupSliderView(
+                sliderValue: $greenSliderValue,
+                presentedValue: $greenInputValue,
+                color: .green
+            ).focused($focus, equals: .greenInput)
+            
+            GroupSliderView(
+                sliderValue: $blueSliderValue,
+                presentedValue: $blueInputValue,
+                color: .blue
+            ).focused($focus, equals: .blueInput)
         }
     }
     
-    private func updateViewOnTextFieldsChange() {
+    private func updateSlidersOnTextFieldsChange() {
         switch focus {
         case .none:
             focus = nil
         case .redInput:
-            validateInput(redInputValue, in: .redInput)
+            if validateInput(redInputValue, in: .redInput) {
+                redSliderValue = Double(redInputValue) ?? 0
+            }
         case .greenInput:
-            validateInput(greenInputValue, in: .greenInput)
+            if validateInput(greenInputValue, in: .greenInput) {
+                greenSliderValue = Double(greenInputValue) ?? 0
+            }
         case .blueInput:
-            validateInput(blueInputValue, in: .blueInput)
+            if validateInput(blueInputValue, in: .blueInput) {
+                blueSliderValue = Double(blueInputValue) ?? 0
+            }
         }
-        endEditing()
     }
     
-    private func validateInput(_ input: String, in focusField: FocusedField) {
+    private func validateInput(_ input: String, in focusField: FocusedField) -> Bool {
         if !isInputInColorRange(input) {
             isAlertPresenting.toggle()
             focus = focusField
-            return
-        }
-        switch focus {
-        case .none:
+        } else {
             focus = nil
-        case .redInput:
-                redSliderValue = Double(input) ?? 0
-        case .greenInput:
-            greenSliderValue = Double(input) ?? 0
-        case .blueInput:
-            blueSliderValue = Double(input) ?? 0
         }
+        return isInputInColorRange(input)
     }
-    
     
 }
 
@@ -120,14 +113,6 @@ extension View {
         return (0...255).contains(input)
     }
 }
-
-extension View {
-    func endEditing() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
-
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {

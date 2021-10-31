@@ -24,7 +24,6 @@ struct ColorPresentingView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(.white, lineWidth: 5)
             )
-
     }
 }
 
