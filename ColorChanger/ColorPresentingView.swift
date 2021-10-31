@@ -20,7 +20,10 @@ struct ColorPresentingView: View {
                       green: greenColorValue / 255,
                       blue: blueColorValue / 255)
             )
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(.white, lineWidth: 5))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(.white, lineWidth: 5)
+            )
 
     }
 }
