@@ -9,12 +9,13 @@ import SwiftUI
 
 
 struct ColorPresentingView: View {
-    @Binding var redColorValue: Double
-    @Binding var greenColorValue: Double
-    @Binding var blueColorValue: Double
+    let redColorValue: Double
+    let greenColorValue: Double
+    let blueColorValue: Double
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 12).frame(height: 160)
+        RoundedRectangle(cornerRadius: 12)
+            .frame(height: 160)
             .foregroundColor(
                 Color(red: redColorValue / 255,
                       green: greenColorValue / 255,
@@ -27,8 +28,12 @@ struct ColorPresentingView: View {
     }
 }
 
-//struct ColorPresentingView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ColorPresentingView()
-//    }
-//}
+struct ColorPresentingView_Previews: PreviewProvider {
+    static var previews: some View {
+        ColorPresentingView(
+            redColorValue: 245,
+            greenColorValue: 245,
+            blueColorValue: 245
+        )
+    }
+}

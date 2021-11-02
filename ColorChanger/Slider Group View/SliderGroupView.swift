@@ -9,8 +9,10 @@ import SwiftUI
 
 
 struct GroupSliderView: View {
+    
     @Binding var sliderValue: Double
-    @Binding var presentedValue: String
+    
+    @State private var presentedValue = ""
     
     let color: Color
     
@@ -34,8 +36,9 @@ struct GroupSliderView: View {
 
 
 
-//struct SliderGroupView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SliderGroupView(sliderValue: Binding<20.0>, inputValue: Binding<"">)
-//    }
-//}
+struct SliderGroupView_Previews: PreviewProvider {
+    static var previews: some View {
+        GroupSliderView(sliderValue: .constant(245), color: .green)
+//        GroupSliderView(sliderValue: .constant(245), presentedValue: .constant("245"), color: .green)
+    }
+}

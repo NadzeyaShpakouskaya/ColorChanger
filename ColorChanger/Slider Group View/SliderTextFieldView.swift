@@ -11,38 +11,61 @@ struct SliderTextFieldView: View {
     @Binding var sliderValue: Double
     @Binding var displayedValue: String
     
-    @State private var isAlertPresenting =  false
+    @FocusState private var fieldIsFocused
     
-    @FocusState var isInputActive: Bool
+    @State private var isAlertPresenting =  false
+    @State private var lastEnteredValue: Double = 0
+    
+    
+    
     let color: Color
     
     var body: some View {
-        TextField("", text: $displayedValue, onCommit:  {
-            
-        })
+        TextField("", text: $displayedValue){ _ in
+            validateInput(displayedValue)
+        }
+            .onSubmit(of: .text) {
+                validateInput(displayedValue)
+            }
             .keyboardType(.decimalPad)
             .textFieldStyle(.roundedBorder)
             .foregroundColor(color)
             .frame(width: 50)
             .onAppear {
                 displayedValue = String(lround(sliderValue))
+                lastEnteredValue = sliderValue
             }
             .alert("Wrong format", isPresented: $isAlertPresenting, actions: {}) {
-            Text("Please enter number from 0 to 255")
-        }
+                Text("Please enter number from 0 to 255")
+            }
     }
     
 }
 
 extension SliderTextFieldView {
-    private func validateInput(_ input: String, in focus: Bool ) -> Bool {
+    private func validateInput(_ input: String){
+        
         if !isInputInColorRange(input) {
             isAlertPresenting.toggle()
-            isInputActive = focus
-        } else {
-            isInputActive = false
+            fieldIsFocused = true
+            
+            // reset value to previous entered value
+            displayedValue = String(lround(sliderValue))
         }
-        return isInputInColorRange(input)
+        sliderValue = Double(displayedValue) ?? 0
+        fieldIsFocused = false
+        
+    }
+    
+    private func validateInput() {
+        if isInputInColorRange(displayedValue) {
+            sliderValue = Double(displayedValue) ?? 0
+            fieldIsFocused = false
+            print(displayedValue)
+        }
+        isAlertPresenting.toggle()
+        fieldIsFocused = true
+        print("entered value is out of range")
     }
     
     private func isInputInColorRange(_ value: String) -> Bool {
