@@ -7,47 +7,6 @@
 
 import SwiftUI
 
-struct SliderView: View {
-    @Binding var sliderValue: Double
-    let color: Color
-    
-    var body: some View {
-        Slider(value: $sliderValue, in: 0...255, step: 1)
-            .accentColor(color)
-    }
-}
-
-struct SliderTextFieldView: View {
-    @Binding var sliderValue: Double
-    @Binding var displayedValue: String
-    
-    let color: Color
-    
-    var body: some View {
-        TextField("", text: $displayedValue)
-            .keyboardType(.decimalPad)
-            .textFieldStyle(.roundedBorder)
-            .foregroundColor(color)
-            .frame(width: 50)
-            .onAppear {
-                displayedValue = String(lround(sliderValue))
-            }
-    }
-    
-}
-
-struct SliderTextView: View {
-    
-    @Binding var sliderValue: Double
-    
-    var body: some View {
-        Text("\(lround(sliderValue))")
-            .bold()
-            .frame(width: 50)
-            .foregroundColor(.white)
-    }
-}
-
 
 struct GroupSliderView: View {
     @Binding var sliderValue: Double
